@@ -9,6 +9,7 @@ import (
 	"go-mysql-api/pkg/repositories"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 // UserController controller for user request
@@ -24,8 +25,15 @@ func (u *UserController) GetUsers(c *gin.Context) {
 	userRepository := repositories.NewUserRepository()
 
 	result, err := userRepository.GetAll()
+
 	if err != nil {
-		log.Panicln(err)
+		if gorm.IsRecordNotFoundError(err) {
+			c.JSON(http.StatusNotFound, err.Error())
+		} else {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
+		log.Println(err)
+		return
 	}
 
 	c.JSON(http.StatusOK, result)
@@ -37,8 +45,15 @@ func (u *UserController) GetUser(c *gin.Context) {
 	userRepository := repositories.NewUserRepository()
 
 	result, err := userRepository.FindByID(id)
+
 	if err != nil {
-		log.Panicln(err)
+		if gorm.IsRecordNotFoundError(err) {
+			c.JSON(http.StatusNotFound, err.Error())
+		} else {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
+		log.Println(err)
+		return
 	}
 
 	c.JSON(http.StatusOK, result)
@@ -52,7 +67,9 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 	err := userRepository.Regist(user)
 	if err != nil {
-		log.Panicln(err)
+		c.JSON(http.StatusInternalServerError, err)
+		log.Println(err)
+		return
 	}
 	c.JSON(http.StatusCreated, nil)
 }
@@ -64,9 +81,17 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 	c.BindJSON(&user)
 
 	err := userRepository.Update(user)
+
 	if err != nil {
-		log.Panicln(err)
+		if gorm.IsRecordNotFoundError(err) {
+			c.JSON(http.StatusNotFound, err.Error())
+		} else {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
+		log.Println(err)
+		return
 	}
+
 	c.JSON(http.StatusOK, nil)
 }
 
@@ -77,7 +102,10 @@ func (u *UserController) DeleteUser(c *gin.Context) {
 
 	err := userRepository.Delete(id)
 	if err != nil {
-		log.Panicln(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		log.Println(err)
+		return
 	}
+
 	c.JSON(http.StatusNoContent, nil)
 }
