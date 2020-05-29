@@ -14,27 +14,27 @@ func NewUserRepository() *UserRepository {
 }
 
 // GetAll Get all usersdata
-func (r *UserRepository) GetAll() (result []models.User_DataTable, err error) {
+func (r *UserRepository) GetAll() ([]models.User_DataTable, error) {
 	d := database.NewDB()
 	db := d.Connect()
 	defer d.Close()
 
 	users := []models.User_DataTable{}
-	dbError := db.Find(&users).Error
+	err := db.Find(&users).Error
 
-	return users, dbError
+	return users, err
 }
 
 // FindByID Get single usersdata
-func (r *UserRepository) FindByID(id int) (result models.User_DataTable, err error) {
+func (r *UserRepository) FindByID(id int) (models.User_DataTable, error) {
 	d := database.NewDB()
 	db := d.Connect()
 	defer d.Close()
 
 	user := models.User_DataTable{}
-	dbError := db.First(&user, id).Error
+	err := db.First(&user, id).Error
 
-	return user, dbError
+	return user, err
 }
 
 // Regist Add user
@@ -43,9 +43,7 @@ func (r *UserRepository) Regist(user models.User) error {
 	db := d.Connect()
 	defer d.Close()
 
-	dbError := db.Create(&user).Error
-
-	return dbError
+	return db.Create(&user).Error
 }
 
 // Update Update user
@@ -54,9 +52,11 @@ func (r *UserRepository) Update(user models.User) error {
 	db := d.Connect()
 	defer d.Close()
 
-	dbError := db.Save(&user).Error
+	if err := db.First(&user, user.ID).Error; err != nil {
+		return err
+	}
 
-	return dbError
+	return db.Save(&user).Error
 }
 
 // Delete Delete userdata
@@ -72,7 +72,6 @@ func (r *UserRepository) Delete(id int) error {
 	}
 
 	user.ID = id
-	dbError := db.Delete(&user).Error
 
-	return dbError
+	return db.Delete(&user).Error
 }
