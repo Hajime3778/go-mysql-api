@@ -4,6 +4,7 @@ import (
 	"go-mysql-api/pkg/controllers"
 	"go-mysql-api/pkg/utils"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -12,7 +13,10 @@ func main() {
 	utils.LoggingSettings()
 
 	router := gin.Default()
-	// router.Use() // 共通でやりたい処理があればここに入れる
+
+	// すべてのアクセス許可
+	config := cors.Config{AllowOrigins: []string{"*"}}
+	router.Use(cors.New(config))
 
 	router.StaticFile("/", "./index.html")
 
