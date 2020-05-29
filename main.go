@@ -12,8 +12,8 @@ func main() {
 	utils.LoggingSettings()
 
 	router := gin.Default()
+	// router.Use() // 共通でやりたい処理があればここに入れる
 
-	router.Use(gin.Logger())
 	router.StaticFile("/", "./index.html")
 
 	// User routing set up
