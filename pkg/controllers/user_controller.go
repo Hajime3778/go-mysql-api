@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-mysql-api/pkg/models"
+	"go-mysql-api/pkg/domain"
 	"go-mysql-api/pkg/repositories"
 
 	"github.com/gin-gonic/gin"
@@ -13,18 +13,29 @@ import (
 )
 
 // UserController controller for user request
-type UserController struct{}
+type UserController interface {
+	GetUsers(c *gin.Context)
+	GetUser(c *gin.Context)
+	CreateUser(c *gin.Context)
+	UpdateUser(c *gin.Context)
+	DeleteUser(c *gin.Context)
+}
+
+// userController controller for user request
+type userController struct {
+	repo repositories.UserRepository
+}
 
 // NewUserController is init for UserController
-func NewUserController() *UserController {
-	return new(UserController)
+func NewUserController(repo repositories.UserRepository) UserController {
+	return &userController{
+		repo: repo,
+	}
 }
 
 // GetUsers 複数のUserを取得します
-func (u *UserController) GetUsers(c *gin.Context) {
-	userRepository := repositories.NewUserRepository()
-
-	result, err := userRepository.GetAll()
+func (u *userController) GetUsers(c *gin.Context) {
+	result, err := u.repo.GetAll()
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -40,11 +51,10 @@ func (u *UserController) GetUsers(c *gin.Context) {
 }
 
 // GetUser 1件のUserを取得します
-func (u *UserController) GetUser(c *gin.Context) {
+func (u *userController) GetUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	userRepository := repositories.NewUserRepository()
 
-	result, err := userRepository.FindByID(id)
+	result, err := u.repo.FindByID(id)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -60,12 +70,11 @@ func (u *UserController) GetUser(c *gin.Context) {
 }
 
 // CreateUser Userを作成します
-func (u *UserController) CreateUser(c *gin.Context) {
-	userRepository := repositories.NewUserRepository()
-	var user models.User
+func (u *userController) CreateUser(c *gin.Context) {
+	var user domain.User
 	c.BindJSON(&user)
 
-	err := userRepository.Regist(user)
+	err := u.repo.Regist(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		log.Println(err)
@@ -75,12 +84,11 @@ func (u *UserController) CreateUser(c *gin.Context) {
 }
 
 // UpdateUser Userを更新します。
-func (u *UserController) UpdateUser(c *gin.Context) {
-	userRepository := repositories.NewUserRepository()
-	var user models.User
+func (u *userController) UpdateUser(c *gin.Context) {
+	var user domain.User
 	c.BindJSON(&user)
 
-	err := userRepository.Update(user)
+	err := u.repo.Update(user)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -96,11 +104,10 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 }
 
 // DeleteUser Userを削除します
-func (u *UserController) DeleteUser(c *gin.Context) {
+func (u *userController) DeleteUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	userRepository := repositories.NewUserRepository()
 
-	err := userRepository.Delete(id)
+	err := u.repo.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		log.Println(err)
