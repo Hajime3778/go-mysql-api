@@ -1,7 +1,7 @@
 package database
 
 import (
-	"go-mysql-api/config"
+	"go-mysql-api/pkg/infrastructure/config"
 	"strings"
 
 	"github.com/jinzhu/gorm"
