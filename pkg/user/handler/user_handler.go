@@ -1,4 +1,4 @@
-package controllers
+package handler
 
 import (
 	"log"
@@ -6,36 +6,36 @@ import (
 	"strconv"
 
 	"go-mysql-api/pkg/domain"
-	"go-mysql-api/pkg/repositories"
+	"go-mysql-api/pkg/user/usecase"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
-// UserController controller for user request
-type UserController interface {
-	GetUsers(c *gin.Context)
-	GetUser(c *gin.Context)
-	CreateUser(c *gin.Context)
-	UpdateUser(c *gin.Context)
-	DeleteUser(c *gin.Context)
+// UserHandler controller for user request
+type UserHandler interface {
+	GetAll(c *gin.Context)
+	Get(c *gin.Context)
+	Create(c *gin.Context)
+	Update(c *gin.Context)
+	Delete(c *gin.Context)
 }
 
-// userController controller for user request
-type userController struct {
-	repo repositories.UserRepository
+// userHandler controller for user request
+type userHandler struct {
+	usecase usecase.UserUsecase
 }
 
-// NewUserController is init for UserController
-func NewUserController(repo repositories.UserRepository) UserController {
-	return &userController{
-		repo: repo,
+// NewUserHandler is init for UserHandler
+func NewUserHandler(u usecase.UserUsecase) UserHandler {
+	return &userHandler{
+		usecase: u,
 	}
 }
 
-// GetUsers 複数のUserを取得します
-func (u *userController) GetUsers(c *gin.Context) {
-	result, err := u.repo.GetAll()
+// GetAll 複数のUserを取得します
+func (h *userHandler) GetAll(c *gin.Context) {
+	result, err := h.usecase.GetUsers()
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -50,11 +50,11 @@ func (u *userController) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// GetUser 1件のUserを取得します
-func (u *userController) GetUser(c *gin.Context) {
+// Get 1件のUserを取得します
+func (h *userHandler) Get(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	result, err := u.repo.FindByID(id)
+	result, err := h.usecase.GetUser(id)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -69,12 +69,12 @@ func (u *userController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// CreateUser Userを作成します
-func (u *userController) CreateUser(c *gin.Context) {
+// Create Userを作成します
+func (h *userHandler) Create(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
-	err := u.repo.Regist(user)
+	err := h.usecase.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		log.Println(err)
@@ -83,12 +83,12 @@ func (u *userController) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-// UpdateUser Userを更新します。
-func (u *userController) UpdateUser(c *gin.Context) {
+// Update Userを更新します。
+func (h *userHandler) Update(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
-	err := u.repo.Update(user)
+	err := h.usecase.UpdateUser(user)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -103,11 +103,11 @@ func (u *userController) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-// DeleteUser Userを削除します
-func (u *userController) DeleteUser(c *gin.Context) {
+// Delete Userを削除します
+func (h *userHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := u.repo.Delete(id)
+	err := h.usecase.DeleteUser(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		log.Println(err)

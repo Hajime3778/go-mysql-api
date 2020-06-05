@@ -1,4 +1,4 @@
-package repositories
+package repository
 
 import (
 	"go-mysql-api/pkg/domain"
