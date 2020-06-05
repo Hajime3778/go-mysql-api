@@ -27,10 +27,17 @@ type userHandler struct {
 }
 
 // NewUserHandler is init for UserHandler
-func NewUserHandler(u usecase.UserUsecase) UserHandler {
-	return &userHandler{
+func NewUserHandler(router *gin.Engine, u usecase.UserUsecase) {
+	handler := &userHandler{
 		usecase: u,
 	}
+	router.GET("api/user", handler.GetAll)
+	router.GET("api/user/:id", handler.Get)
+	router.POST("api/user", handler.Create)
+	router.PUT("api/user", handler.Update)
+	router.DELETE("api/user/:id", handler.Delete)
+	// POSTで更新したい場合↓のように書ける
+	// router.POST("/user/*action", handler.Update)
 }
 
 // GetAll 複数のUserを取得します
