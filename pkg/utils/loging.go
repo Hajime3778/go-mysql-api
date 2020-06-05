@@ -9,8 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// LoggingSettings ログの設定をします。
-func LoggingSettings() {
+// LoggingSetting ログの設定をします。
+func LoggingSetting() {
 
 	// 日付単位でログファイルを作成する。
 	day := time.Now()
