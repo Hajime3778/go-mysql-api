@@ -1,9 +1,10 @@
 package main
 
 import (
-	"go-mysql-api/pkg/controllers"
 	"go-mysql-api/pkg/infrastructure/database"
-	"go-mysql-api/pkg/repositories"
+	"go-mysql-api/pkg/user/handler"
+	"go-mysql-api/pkg/user/repository"
+	"go-mysql-api/pkg/user/usecase"
 	"go-mysql-api/pkg/utils"
 
 	"github.com/gin-contrib/cors"
@@ -23,15 +24,16 @@ func main() {
 	router.StaticFile("/", "./index.html")
 
 	db := database.NewDB()
-	userRepo := repositories.NewUserRepository(db.Connect())
-	userController := controllers.NewUserController(userRepo)
+	userRepo := repository.NewUserRepository(db.Connect())
+	userUsecase := usecase.NewUserUsecase(userRepo)
+	userHandler := handler.NewUserHandler(userUsecase)
 
 	// User routing set up
-	router.GET("api/user", userController.GetUsers)
-	router.GET("api/user/:id", userController.GetUser)
-	router.POST("api/user", userController.CreateUser)
-	router.PUT("api/user", userController.UpdateUser)
-	router.DELETE("api/user/:id", userController.DeleteUser)
+	router.GET("api/user", userHandler.GetAll)
+	router.GET("api/user/:id", userHandler.Get)
+	router.POST("api/user", userHandler.Create)
+	router.PUT("api/user", userHandler.Update)
+	router.DELETE("api/user/:id", userHandler.Delete)
 
 	// POSTで更新したい場合↓のように書ける
 	// router.POST("/user/*action", user.UpdateUser)
