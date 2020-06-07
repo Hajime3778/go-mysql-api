@@ -1,10 +1,9 @@
 package config
 
 import (
-	"log"
-	"os"
+	"fmt"
 
-	"gopkg.in/ini.v1"
+	"github.com/spf13/viper"
 )
 
 // DataBaseConfigList foo
@@ -16,22 +15,41 @@ type DataBaseConfigList struct {
 	Database string
 }
 
-// DataBaseConfig foo
-var DataBaseConfig DataBaseConfigList
+// Config config
+type Config struct {
+	Server struct {
+		Port    string
+		Timeout int
+	}
+	DataBase struct {
+		Host     string
+		Port     string
+		User     string
+		Password string
+		Database string
+	}
+}
 
-func init() {
-	cfg, err := ini.Load("../../config.ini")
+// NewConfig create config
+func NewConfig() *Config {
 
+	viper.SetConfigFile("config.json")
+	err := viper.ReadInConfig()
 	if err != nil {
-		log.Printf("Failed to read file: %v", err)
-		os.Exit(1)
+		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
 
-	DataBaseConfig = DataBaseConfigList{
-		User:     cfg.Section("DBConnection").Key("user").String(),
-		Password: cfg.Section("DBConnection").Key("password").String(),
-		Host:     cfg.Section("DBConnection").Key("host").String(),
-		Port:     cfg.Section("DBConnection").Key("port").String(),
-		Database: cfg.Section("DBConnection").Key("database").String(),
+	c := new(Config)
+
+	// conf読み取り
+	if err := viper.ReadInConfig(); err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
+
+	// UnmarshalしてCにマッピング
+	if err := viper.Unmarshal(&c); err != nil {
+		panic(fmt.Errorf("unable to decode into struct, %v", err))
+	}
+
+	return c
 }

@@ -20,13 +20,13 @@ type DB struct {
 }
 
 // NewDB DataBase create
-func NewDB() *DB {
+func NewDB(c *config.Config) *DB {
 	return newDB(&DB{
-		Host:     config.DataBaseConfig.Host,
-		Port:     config.DataBaseConfig.Port,
-		Username: config.DataBaseConfig.User,
-		Password: config.DataBaseConfig.Password,
-		DBName:   config.DataBaseConfig.Database,
+		Host:     c.DataBase.Host,
+		Port:     c.DataBase.Port,
+		Username: c.DataBase.User,
+		Password: c.DataBase.Password,
+		DBName:   c.DataBase.Database,
 	})
 }
 
@@ -50,6 +50,7 @@ func newDB(d *DB) *DB {
 		panic(err.Error())
 	}
 
+	// gormのデフォルトテーブル名のルールを修正
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return strings.Replace(defaultTableName, "_data_table", "", 1)
 	}

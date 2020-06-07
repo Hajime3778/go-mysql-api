@@ -9,6 +9,7 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.0
+	github.com/spf13/viper v1.7.0
 	gopkg.in/ini.v1 v1.56.0
 	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86 // indirect
 )
