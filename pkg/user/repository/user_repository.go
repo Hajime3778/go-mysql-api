@@ -1,0 +1,71 @@
+package repository
+
+import (
+	"go-mysql-api/pkg/domain"
+
+	"github.com/jinzhu/gorm"
+)
+
+// UserRepository repository
+type UserRepository interface {
+	GetAll() ([]domain.User_DataTable, error)
+	FindByID(id int) (domain.User_DataTable, error)
+	Regist(user domain.User) error
+	Update(user domain.User) error
+	Delete(id int) error
+}
+
+type userRepository struct {
+	db *gorm.DB
+}
+
+// NewUserRepository is init for UserController
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &userRepository{
+		db: db,
+	}
+}
+
+// GetAll Get all usersdata
+func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
+	users := []domain.User_DataTable{}
+	err := r.db.Find(&users).Error
+
+	return users, err
+}
+
+// FindByID Get single usersdata
+func (r *userRepository) FindByID(id int) (domain.User_DataTable, error) {
+	user := domain.User_DataTable{}
+	err := r.db.First(&user, id).Error
+
+	return user, err
+}
+
+// Regist Add user
+func (r *userRepository) Regist(user domain.User) error {
+	return r.db.Create(&user).Error
+}
+
+// Update Update user
+func (r *userRepository) Update(user domain.User) error {
+	targetUser := domain.User{}
+	if err := r.db.First(&targetUser, user.ID).Error; err != nil {
+		return err
+	}
+
+	return r.db.Save(&user).Error
+}
+
+// Delete Delete userdata
+func (r *userRepository) Delete(id int) error {
+	user := domain.User_DataTable{}
+
+	if id <= 0 {
+		return nil
+	}
+
+	user.ID = id
+
+	return r.db.Delete(&user).Error
+}

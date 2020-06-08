@@ -1,7 +1,9 @@
 package database
 
 import (
-	"go-mysql-api/config"
+	"fmt"
+	"go-mysql-api/pkg/infrastructure/config"
+	"net/url"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -10,6 +12,7 @@ import (
 // DB Database
 type DB struct {
 	Host       string
+	Port       string
 	Username   string
 	Password   string
 	DBName     string
@@ -17,21 +20,37 @@ type DB struct {
 }
 
 // NewDB DataBase create
-func NewDB() *DB {
+func NewDB(c *config.Config) *DB {
 	return newDB(&DB{
-		Host:     config.DataBaseConfig.Host,
-		Username: config.DataBaseConfig.User,
-		Password: config.DataBaseConfig.Password,
-		DBName:   config.DataBaseConfig.Database,
+		Host:     c.DataBase.Host,
+		Port:     c.DataBase.Port,
+		Username: c.DataBase.User,
+		Password: c.DataBase.Password,
+		DBName:   c.DataBase.Database,
 	})
 }
 
 func newDB(d *DB) *DB {
-	db, err := gorm.Open("mysql", d.Username+":"+d.Password+"@tcp("+d.Host+")/"+d.DBName+"?charset=utf8&parseTime=True&loc=Local")
+	connectionInfo := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		d.Username,
+		d.Password,
+		d.Host,
+		d.Port,
+		d.DBName)
+
+	option := url.Values{}
+	option.Add("charset", "utf8")
+	option.Add("parseTime", "True")
+	option.Add("loc", "Local")
+
+	connection := fmt.Sprintf("%s?%s", connectionInfo, option.Encode())
+
+	db, err := gorm.Open("mysql", connection)
 	if err != nil {
 		panic(err.Error())
 	}
 
+	// gormのデフォルトテーブル名のルールを修正
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return strings.Replace(defaultTableName, "_data_table", "", 1)
 	}
@@ -50,7 +69,7 @@ func (db *DB) Connect() *gorm.DB {
 	return db.Connection
 }
 
-// Connect connect a database
+// Close close a database
 func (db *DB) Close() *gorm.DB {
 	return db.Connection
 }
