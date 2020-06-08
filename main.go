@@ -22,7 +22,8 @@ func main() {
 	// User
 	userRepo := repository.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepo)
-	handler.NewUserHandler(router, userUsecase)
+	userHandler := handler.NewUserHandler(router, userUsecase)
+	userHandler.Handle()
 
 	server.Run()
 }
