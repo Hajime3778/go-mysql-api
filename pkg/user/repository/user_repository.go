@@ -28,10 +28,6 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 // GetAll Get all usersdata
 func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
-	// d := database.NewDB()
-	// db := d.Connect()
-	// defer d.Close()
-
 	users := []domain.User_DataTable{}
 	err := r.db.Find(&users).Error
 
@@ -40,10 +36,6 @@ func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
 
 // FindByID Get single usersdata
 func (r *userRepository) FindByID(id int) (domain.User_DataTable, error) {
-	// d := database.NewDB()
-	// db := d.Connect()
-	// defer d.Close()
-
 	user := domain.User_DataTable{}
 	err := r.db.First(&user, id).Error
 
@@ -52,19 +44,11 @@ func (r *userRepository) FindByID(id int) (domain.User_DataTable, error) {
 
 // Regist Add user
 func (r *userRepository) Regist(user domain.User) error {
-	// d := database.NewDB()
-	// db := d.Connect()
-	// defer d.Close()
-
 	return r.db.Create(&user).Error
 }
 
 // Update Update user
 func (r *userRepository) Update(user domain.User) error {
-	// d := database.NewDB()
-	// db := d.Connect()
-	// defer d.Close()
-
 	targetUser := domain.User{}
 	if err := r.db.First(&targetUser, user.ID).Error; err != nil {
 		return err
@@ -75,10 +59,6 @@ func (r *userRepository) Update(user domain.User) error {
 
 // Delete Delete userdata
 func (r *userRepository) Delete(id int) error {
-	// d := database.NewDB()
-	// db := d.Connect()
-	// defer d.Close()
-
 	user := domain.User_DataTable{}
 
 	if id <= 0 {
