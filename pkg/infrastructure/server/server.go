@@ -2,38 +2,29 @@ package server
 
 import (
 	"go-mysql-api/pkg/infrastructure/config"
+	"go-mysql-api/pkg/infrastructure/database"
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // Server server
 type Server struct {
-	Router *gin.Engine
+	db     *database.DB
+	router *gin.Engine
 	server *http.Server
 }
 
 // NewServer Server create
-func NewServer(c *config.Config) *Server {
+func NewServer(c *config.Config, db *database.DB) *Server {
 	r := newRouter()
 	s := newServer(c, r)
 	return &Server{
-		Router: r,
+		db:     db,
+		router: r,
 		server: s,
 	}
-}
-
-func newRouter() *gin.Engine {
-	router := gin.Default()
-
-	// すべてのアクセス許可
-	config := cors.Config{AllowOrigins: []string{"*"}}
-	router.Use(cors.New(config))
-	router.StaticFile("/", "./index.html")
-
-	return router
 }
 
 func newServer(c *config.Config, router *gin.Engine) *http.Server {

@@ -13,43 +13,31 @@ import (
 )
 
 // UserHandler controller for user request
-// type UserHandler interface {
-// 	Handle()
-// 	// GetAll(c *gin.Context)
-// 	// Get(c *gin.Context)
-// 	// Create(c *gin.Context)
-// 	// Update(c *gin.Context)
-// 	// Delete(c *gin.Context)
-// }
+type UserHandler interface {
+	GetAll(c *gin.Context)
+	FindByID(c *gin.Context)
+	Create(c *gin.Context)
+	Update(c *gin.Context)
+	Delete(c *gin.Context)
+}
 
 // UserHandler controller for user request
-type UserHandler struct {
+type userHandler struct {
 	router  *gin.Engine
 	usecase usecase.UserUsecase
 }
 
 // NewUserHandler is init for UserHandler
-func NewUserHandler(r *gin.Engine, u usecase.UserUsecase) *UserHandler {
-	return &UserHandler{
+func NewUserHandler(r *gin.Engine, u usecase.UserUsecase) UserHandler {
+	return &userHandler{
 		router:  r,
 		usecase: u,
 	}
 }
 
-// Handle Set api handling
-func (h *UserHandler) Handle() {
-	h.router.GET("api/user", h.getAll)
-	h.router.GET("api/user/:id", h.get)
-	h.router.POST("api/user", h.create)
-	h.router.PUT("api/user", h.update)
-	h.router.DELETE("api/user/:id", h.delete)
-	// POSTで更新したい場合↓のように書ける
-	// router.POST("/user/*action", handler.Update)
-}
-
 // GetAll 複数のUserを取得します
-func (h *UserHandler) getAll(c *gin.Context) {
-	result, err := h.usecase.GetUsers()
+func (h *userHandler) GetAll(c *gin.Context) {
+	result, err := h.usecase.GetAll()
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -64,11 +52,11 @@ func (h *UserHandler) getAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// Get 1件のUserを取得します
-func (h *UserHandler) get(c *gin.Context) {
+// FindByID 1件のUserを取得します
+func (h *userHandler) FindByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	result, err := h.usecase.GetUser(id)
+	result, err := h.usecase.FindByID(id)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -84,11 +72,11 @@ func (h *UserHandler) get(c *gin.Context) {
 }
 
 // Create Userを作成します
-func (h *UserHandler) create(c *gin.Context) {
+func (h *userHandler) Create(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
-	err := h.usecase.CreateUser(user)
+	err := h.usecase.Create(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		log.Println(err)
@@ -98,11 +86,11 @@ func (h *UserHandler) create(c *gin.Context) {
 }
 
 // Update Userを更新します。
-func (h *UserHandler) update(c *gin.Context) {
+func (h *userHandler) Update(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
-	err := h.usecase.UpdateUser(user)
+	err := h.usecase.Update(user)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -118,10 +106,10 @@ func (h *UserHandler) update(c *gin.Context) {
 }
 
 // Delete Userを削除します
-func (h *UserHandler) delete(c *gin.Context) {
+func (h *userHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := h.usecase.DeleteUser(id)
+	err := h.usecase.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		log.Println(err)
