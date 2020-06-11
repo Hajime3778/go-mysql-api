@@ -21,10 +21,11 @@ func newRouter() *gin.Engine {
 }
 
 // SetUpRouter Setup all api routing
-func (s *Server) SetUpRouter() {
+func (s *Server) SetUpRouter() *gin.Engine {
 	// Group v1
 	apiV1 := s.router.Group("api/v1")
 	s.userRoutes(apiV1)
+	return s.router
 }
 
 func (s *Server) userRoutes(api *gin.RouterGroup) {

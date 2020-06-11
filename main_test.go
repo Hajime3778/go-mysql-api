@@ -1,37 +1,40 @@
 package main_test
 
 import (
-	"go-mysql-api/pkg/controllers"
+	"go-mysql-api/pkg/infrastructure/config"
+	"go-mysql-api/pkg/infrastructure/database"
+	"go-mysql-api/pkg/infrastructure/server"
 	"go-mysql-api/pkg/utils"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMainRouter(t *testing.T) {
+func TestMain(t *testing.T) {
+	utils.LoggingSetting()
+	cfg := config.NewConfig()
+	db := database.NewDB(cfg)
 
-	utils.LoggingSettings()
+	server := server.NewServer(cfg, db)
+	router := server.SetUpRouter()
 
-	router := gin.Default()
+	testUsers(t, router)
+}
 
-	// すべてのアクセス許可
-	config := cors.Config{AllowOrigins: []string{"*"}}
-	router.Use(cors.New(config))
+func testUsers(t *testing.T, router *gin.Engine) {
+	getAllRes := httptest.NewRecorder()
+	getAllReq, _ := http.NewRequest("GET", "/api/v1/users", nil)
+	router.ServeHTTP(getAllRes, getAllReq)
 
-	user := controllers.NewUserController()
-	router.GET("api/user", user.GetUsers)
-	//router.Run(":3000")
+	assert.Equal(t, 200, getAllRes.Code)
 
-	w := httptest.NewRecorder()
+	findByIdRes := httptest.NewRecorder()
+	findByIdReq, _ := http.NewRequest("GET", "/api/v1/users/1", nil)
+	router.ServeHTTP(findByIdRes, findByIdReq)
 
-	req, _ := http.NewRequest("GET", "/api/user", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-
+	assert.Equal(t, 200, findByIdRes.Code)
 }
