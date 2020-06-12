@@ -9,7 +9,7 @@ import (
 
 // UserRepository repository
 type UserRepository interface {
-	GetAll() ([]domain.User_DataTable, error)
+	FindAll() ([]domain.User_DataTable, error)
 	FindByID(id int) (domain.User_DataTable, error)
 	Create(user domain.User) error
 	Update(user domain.User) error
@@ -27,8 +27,8 @@ func NewUserRepository(db *database.DB) UserRepository {
 	}
 }
 
-// GetAll Get all usersdata
-func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
+// FindAll Get all usersdata
+func (r *userRepository) FindAll() ([]domain.User_DataTable, error) {
 	users := []domain.User_DataTable{}
 	err := r.db.Find(&users).Error
 

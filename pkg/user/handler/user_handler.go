@@ -13,31 +13,28 @@ import (
 )
 
 // UserHandler controller for user request
-type UserHandler interface {
-	GetAll(c *gin.Context)
-	FindByID(c *gin.Context)
-	Create(c *gin.Context)
-	Update(c *gin.Context)
-	Delete(c *gin.Context)
-}
-
-// UserHandler controller for user request
-type userHandler struct {
-	router  *gin.Engine
+type UserHandler struct {
 	usecase usecase.UserUsecase
 }
 
 // NewUserHandler is init for UserHandler
-func NewUserHandler(r *gin.Engine, u usecase.UserUsecase) UserHandler {
-	return &userHandler{
-		router:  r,
+func NewUserHandler(r *gin.RouterGroup, u usecase.UserUsecase) {
+	handler := &UserHandler{
 		usecase: u,
+	}
+	userRoutes := r.Group("/users")
+	{
+		userRoutes.GET("", handler.FindAll)
+		userRoutes.GET("/:id", handler.FindByID)
+		userRoutes.POST("", handler.Create)
+		userRoutes.PUT("", handler.Update)
+		userRoutes.DELETE("/:id", handler.Delete)
 	}
 }
 
-// GetAll 複数のUserを取得します
-func (h *userHandler) GetAll(c *gin.Context) {
-	result, err := h.usecase.GetAll()
+// FindAll 複数のUserを取得します
+func (h *UserHandler) FindAll(c *gin.Context) {
+	result, err := h.usecase.FindAll()
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -53,7 +50,7 @@ func (h *userHandler) GetAll(c *gin.Context) {
 }
 
 // FindByID 1件のUserを取得します
-func (h *userHandler) FindByID(c *gin.Context) {
+func (h *UserHandler) FindByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	result, err := h.usecase.FindByID(id)
@@ -72,7 +69,7 @@ func (h *userHandler) FindByID(c *gin.Context) {
 }
 
 // Create Userを作成します
-func (h *userHandler) Create(c *gin.Context) {
+func (h *UserHandler) Create(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
@@ -86,7 +83,7 @@ func (h *userHandler) Create(c *gin.Context) {
 }
 
 // Update Userを更新します。
-func (h *userHandler) Update(c *gin.Context) {
+func (h *UserHandler) Update(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
@@ -106,7 +103,7 @@ func (h *userHandler) Update(c *gin.Context) {
 }
 
 // Delete Userを削除します
-func (h *userHandler) Delete(c *gin.Context) {
+func (h *UserHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := h.usecase.Delete(id)

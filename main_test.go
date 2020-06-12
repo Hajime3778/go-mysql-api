@@ -26,11 +26,11 @@ func TestMain(t *testing.T) {
 }
 
 func testUsers(t *testing.T, router *gin.Engine) {
-	getAllRes := httptest.NewRecorder()
-	getAllReq, _ := http.NewRequest("GET", "/api/v1/users", nil)
-	router.ServeHTTP(getAllRes, getAllReq)
+	findAllRes := httptest.NewRecorder()
+	findAllReq, _ := http.NewRequest("GET", "/api/v1/users", nil)
+	router.ServeHTTP(findAllRes, findAllReq)
 
-	assert.Equal(t, 200, getAllRes.Code)
+	assert.Equal(t, 200, findAllRes.Code)
 
 	findByIdRes := httptest.NewRecorder()
 	findByIdReq, _ := http.NewRequest("GET", "/api/v1/users/1", nil)

@@ -29,17 +29,7 @@ func (s *Server) SetUpRouter() *gin.Engine {
 }
 
 func (s *Server) userRoutes(api *gin.RouterGroup) {
-
 	repository := repository.NewUserRepository(s.db)
 	usecase := usecase.NewUserUsecase(repository)
-	handler := handler.NewUserHandler(s.router, usecase)
-
-	userRoutes := api.Group("/users")
-	{
-		userRoutes.GET("", handler.GetAll)
-		userRoutes.GET("/:id", handler.FindByID)
-		userRoutes.POST("", handler.Create)
-		userRoutes.PUT("", handler.Update)
-		userRoutes.DELETE("/:id", handler.Delete)
-	}
+	handler.NewUserHandler(api, usecase)
 }

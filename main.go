@@ -1,9 +1,9 @@
 package main
 
 import (
+	"go-mysql-api/cmd/server"
 	"go-mysql-api/pkg/infrastructure/config"
 	"go-mysql-api/pkg/infrastructure/database"
-	"go-mysql-api/pkg/infrastructure/server"
 	"go-mysql-api/pkg/utils"
 
 	_ "github.com/go-sql-driver/mysql"
