@@ -2,15 +2,16 @@ package repository
 
 import (
 	"go-mysql-api/pkg/domain"
+	"go-mysql-api/pkg/infrastructure/database"
 
 	"github.com/jinzhu/gorm"
 )
 
 // UserRepository repository
 type UserRepository interface {
-	GetAll() ([]domain.User_DataTable, error)
+	FindAll() ([]domain.User_DataTable, error)
 	FindByID(id int) (domain.User_DataTable, error)
-	Regist(user domain.User) error
+	Create(user domain.User) error
 	Update(user domain.User) error
 	Delete(id int) error
 }
@@ -20,14 +21,14 @@ type userRepository struct {
 }
 
 // NewUserRepository is init for UserController
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *database.DB) UserRepository {
 	return &userRepository{
-		db: db,
+		db: db.Connection,
 	}
 }
 
-// GetAll Get all usersdata
-func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
+// FindAll Get all usersdata
+func (r *userRepository) FindAll() ([]domain.User_DataTable, error) {
 	users := []domain.User_DataTable{}
 	err := r.db.Find(&users).Error
 
@@ -43,7 +44,7 @@ func (r *userRepository) FindByID(id int) (domain.User_DataTable, error) {
 }
 
 // Regist Add user
-func (r *userRepository) Regist(user domain.User) error {
+func (r *userRepository) Create(user domain.User) error {
 	return r.db.Create(&user).Error
 }
 

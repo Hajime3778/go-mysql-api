@@ -1,12 +1,9 @@
 package main
 
 import (
+	"go-mysql-api/cmd/server"
 	"go-mysql-api/pkg/infrastructure/config"
 	"go-mysql-api/pkg/infrastructure/database"
-	"go-mysql-api/pkg/infrastructure/server"
-	"go-mysql-api/pkg/user/handler"
-	"go-mysql-api/pkg/user/repository"
-	"go-mysql-api/pkg/user/usecase"
 	"go-mysql-api/pkg/utils"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -15,15 +12,9 @@ import (
 func main() {
 	utils.LoggingSetting()
 	cfg := config.NewConfig()
-	server := server.NewServer(cfg)
-	db := database.NewDB(cfg).Connect()
-	router := server.Router
+	db := database.NewDB(cfg)
 
-	// User
-	userRepo := repository.NewUserRepository(db)
-	userUsecase := usecase.NewUserUsecase(userRepo)
-	userHandler := handler.NewUserHandler(router, userUsecase)
-	userHandler.Handle()
-
+	server := server.NewServer(cfg, db)
+	server.SetUpRouter()
 	server.Run()
 }

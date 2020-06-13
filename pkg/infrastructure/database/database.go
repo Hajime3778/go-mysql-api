@@ -58,18 +58,3 @@ func newDB(d *DB) *DB {
 	d.Connection = db
 	return d
 }
-
-// Begin begins a transaction
-func (db *DB) Begin() *gorm.DB {
-	return db.Connection.Begin()
-}
-
-// Connect connect a database
-func (db *DB) Connect() *gorm.DB {
-	return db.Connection
-}
-
-// Close close a database
-func (db *DB) Close() *gorm.DB {
-	return db.Connection
-}
