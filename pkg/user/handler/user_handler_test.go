@@ -22,7 +22,7 @@ func newMockRouter() (*gin.Engine, *gin.RouterGroup) {
 	return router, apiV1
 }
 
-func TestFindAll(t *testing.T) {
+func TestGetAll(t *testing.T) {
 
 	mockUsers := make([]domain.User_DataTable, 0)
 	mockUser := domain.User_DataTable{}
@@ -36,19 +36,19 @@ func TestFindAll(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockUserUsecase := new(mocks.UserUsecase)
-	mockUserUsecase.On("FindAll").Return(mockUsers, nil).Once()
+	mockUserUsecase.On("GetAll").Return(mockUsers, nil).Once()
 
 	router, rg := newMockRouter()
 	handler.NewUserHandler(rg, mockUserUsecase)
 
-	findAllRes := httptest.NewRecorder()
-	findAllReq, _ := http.NewRequest("GET", "/api/v1/users", nil)
-	router.ServeHTTP(findAllRes, findAllReq)
+	getAllRes := httptest.NewRecorder()
+	getAllReq, _ := http.NewRequest("GET", "/api/v1/users", nil)
+	router.ServeHTTP(getAllRes, getAllReq)
 
-	assert.Equal(t, 200, findAllRes.Code)
+	assert.Equal(t, 200, getAllRes.Code)
 }
 
-func TestFindByID(t *testing.T) {
+func TestGetByID(t *testing.T) {
 	mockUser := domain.User_DataTable{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"
@@ -59,7 +59,7 @@ func TestFindByID(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockUserUsecase := new(mocks.UserUsecase)
-	mockUserUsecase.On("FindByID", mockUser.ID).Return(mockUser, nil).Once()
+	mockUserUsecase.On("GetByID", mockUser.ID).Return(mockUser, nil).Once()
 
 	router, rg := newMockRouter()
 	handler.NewUserHandler(rg, mockUserUsecase)

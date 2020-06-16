@@ -28,7 +28,7 @@ func setUpMockDB() (sqlmock.Sqlmock, *database.DB) {
 	return mock, db
 }
 
-func TestFindAll(t *testing.T) {
+func TestGetAll(t *testing.T) {
 	mock, db := setUpMockDB()
 
 	query := regexp.QuoteMeta("SELECT * FROM `users`")
@@ -38,12 +38,12 @@ func TestFindAll(t *testing.T) {
 
 	userRepository := repository.NewUserRepository(db)
 
-	user, err := userRepository.FindAll()
+	user, err := userRepository.GetAll()
 	assert.NoError(t, err)
 	assert.NotNil(t, user)
 }
 
-func TestFindByID(t *testing.T) {
+func TestGetByID(t *testing.T) {
 	mock, db := setUpMockDB()
 
 	id := 1
@@ -56,7 +56,7 @@ func TestFindByID(t *testing.T) {
 
 	userRepository := repository.NewUserRepository(db)
 
-	user, err := userRepository.FindByID(id)
+	user, err := userRepository.GetByID(id)
 	assert.NoError(t, err)
 	assert.NotNil(t, user)
 }

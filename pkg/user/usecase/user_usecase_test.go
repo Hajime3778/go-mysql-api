@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFindAll(t *testing.T) {
+func TestGetAll(t *testing.T) {
 	mockUsers := make([]domain.User_DataTable, 0)
 	mockUser := domain.User_DataTable{}
 	mockUser.ID = 1
@@ -24,10 +24,10 @@ func TestFindAll(t *testing.T) {
 	mockUserRepo := new(mocks.UserRepository)
 
 	t.Run("test1", func(t *testing.T) {
-		mockUserRepo.On("FindAll").Return(mockUsers, nil).Once()
+		mockUserRepo.On("GetAll").Return(mockUsers, nil).Once()
 		usecase := usecase.NewUserUsecase(mockUserRepo)
 
-		users, err := usecase.FindAll()
+		users, err := usecase.GetAll()
 
 		assert.NoError(t, err)
 		assert.NotNil(t, users)
@@ -36,7 +36,7 @@ func TestFindAll(t *testing.T) {
 	})
 }
 
-func TestFindByID(t *testing.T) {
+func TestGetByID(t *testing.T) {
 	mockUser := domain.User_DataTable{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"
@@ -47,10 +47,10 @@ func TestFindByID(t *testing.T) {
 	mockUserRepo := new(mocks.UserRepository)
 
 	t.Run("test1", func(t *testing.T) {
-		mockUserRepo.On("FindByID", mockUser.ID).Return(mockUser, nil).Once()
+		mockUserRepo.On("GetByID", mockUser.ID).Return(mockUser, nil).Once()
 		usecase := usecase.NewUserUsecase(mockUserRepo)
 
-		user, err := usecase.FindByID(mockUser.ID)
+		user, err := usecase.GetByID(mockUser.ID)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, user)

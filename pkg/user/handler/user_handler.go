@@ -24,17 +24,17 @@ func NewUserHandler(r *gin.RouterGroup, u usecase.UserUsecase) {
 	}
 	userRoutes := r.Group("/users")
 	{
-		userRoutes.GET("", handler.FindAll)
-		userRoutes.GET("/:id", handler.FindByID)
+		userRoutes.GET("", handler.GetAll)
+		userRoutes.GET("/:id", handler.GetByID)
 		userRoutes.POST("", handler.Create)
 		userRoutes.PUT("", handler.Update)
 		userRoutes.DELETE("/:id", handler.Delete)
 	}
 }
 
-// FindAll 複数のUserを取得します
-func (h *UserHandler) FindAll(c *gin.Context) {
-	result, err := h.usecase.FindAll()
+// GetAll 複数のUserを取得します
+func (h *UserHandler) GetAll(c *gin.Context) {
+	result, err := h.usecase.GetAll()
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -49,11 +49,11 @@ func (h *UserHandler) FindAll(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// FindByID 1件のUserを取得します
-func (h *UserHandler) FindByID(c *gin.Context) {
+// GetByID 1件のUserを取得します
+func (h *UserHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	result, err := h.usecase.FindByID(id)
+	result, err := h.usecase.GetByID(id)
 
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
