@@ -108,7 +108,11 @@ func (h *UserHandler) Delete(c *gin.Context) {
 
 	err := h.usecase.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
+		if gorm.IsRecordNotFoundError(err) {
+			c.JSON(http.StatusNotFound, err.Error())
+		} else {
+			c.JSON(http.StatusInternalServerError, err.Error())
+		}
 		log.Println(err)
 		return
 	}

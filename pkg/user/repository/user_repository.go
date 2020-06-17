@@ -63,10 +63,15 @@ func (r *userRepository) Delete(id int) error {
 	user := domain.User{}
 
 	if id <= 0 {
-		return nil
+		return gorm.ErrRecordNotFound
 	}
 
 	user.ID = id
+	result := r.db.Delete(&user)
 
-	return r.db.Delete(&user).Error
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return result.Error
 }
