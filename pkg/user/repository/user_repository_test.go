@@ -64,14 +64,15 @@ func TestCreate(t *testing.T) {
 	mock, db := setUpMockDB()
 
 	mockUser := domain.User{}
-	mockUser.ID = 1
+	mockUser.ID = 0
 	mockUser.Name = "mockuser"
 	mockUser.Email = "mock@mock.com"
+	mockUser.CreatedAt = time.Time{}
+	mockUser.UpdatedAt = time.Time{}
 
 	mock.ExpectBegin()
-	query := regexp.QuoteMeta("INSERT INTO `users` (`id`,`name`,`email`) VALUES (?,?,?)")
+	query := regexp.QuoteMeta("INSERT INTO `users` (`name`,`email`,`created_at`,`updated_at`) VALUES (?,?,?,?)")
 	mock.ExpectExec(query).
-		WithArgs(mockUser.ID, mockUser.Name, mockUser.Email).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -93,14 +94,13 @@ func TestUpdate(t *testing.T) {
 		strconv.Itoa(mockUser.ID) +
 		") ORDER BY `users`.`id` ASC LIMIT 1")
 	selectRows := sqlmock.NewRows([]string{"id", "name", "email", "created_at", "updated_at"}).
-		AddRow(1, "mock user", "mock@mock.com", time.Now(), time.Now())
+		AddRow(1, "mock user", "mock@mock.com", mockUser.CreatedAt, mockUser.UpdatedAt)
 	mock.ExpectQuery(selectQuery).WillReturnRows(selectRows)
 
 	mock.ExpectBegin()
-	query := regexp.QuoteMeta("UPDATE `users` SET `name` = ?, `email` = ? WHERE `users`.`id` = ?")
+	query := regexp.QuoteMeta("UPDATE `users` SET `name` = ?, `email` = ?, `updated_at` = ? WHERE `users`.`id` = ?")
 	mock.ExpectExec(query).
-		WithArgs(mockUser.Name, mockUser.Email, mockUser.ID).
-		WillReturnResult(sqlmock.NewResult(int64(mockUser.ID), 1))
+		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	userRepository := repository.NewUserRepository(db)

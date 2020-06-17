@@ -6,16 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// DataBaseConfigList foo
-type DataBaseConfigList struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	Database string
-}
-
-// Config config
+// Config 設定
 type Config struct {
 	Server struct {
 		Port    string
@@ -30,7 +21,7 @@ type Config struct {
 	}
 }
 
-// NewConfig create config
+// NewConfig 設定ファイルを読み込みCondigを作成します。
 func NewConfig() *Config {
 
 	viper.SetConfigFile("config.json")

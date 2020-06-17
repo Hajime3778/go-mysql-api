@@ -7,8 +7,8 @@ import (
 
 // UserUsecase usecase
 type UserUsecase interface {
-	GetAll() ([]domain.User_DataTable, error)
-	GetByID(id int) (domain.User_DataTable, error)
+	GetAll() ([]domain.User, error)
+	GetByID(id int) (domain.User, error)
 	Create(user domain.User) error
 	Update(user domain.User) error
 	Delete(id int) error
@@ -27,12 +27,12 @@ func NewUserUsecase(repo repository.UserRepository) UserUsecase {
 }
 
 // GetAll 複数のUserを取得します
-func (u *userUsecase) GetAll() ([]domain.User_DataTable, error) {
+func (u *userUsecase) GetAll() ([]domain.User, error) {
 	return u.repo.GetAll()
 }
 
 // GetByID 1件のUserを取得します
-func (u *userUsecase) GetByID(id int) (domain.User_DataTable, error) {
+func (u *userUsecase) GetByID(id int) (domain.User, error) {
 	return u.repo.GetByID(id)
 }
 

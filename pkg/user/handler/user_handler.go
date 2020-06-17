@@ -12,7 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// UserHandler controller for user request
+// UserHandler handler for user request
 type UserHandler struct {
 	usecase usecase.UserUsecase
 }

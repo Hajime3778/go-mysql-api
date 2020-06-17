@@ -9,8 +9,8 @@ import (
 
 // UserRepository repository
 type UserRepository interface {
-	GetAll() ([]domain.User_DataTable, error)
-	GetByID(id int) (domain.User_DataTable, error)
+	GetAll() ([]domain.User, error)
+	GetByID(id int) (domain.User, error)
 	Create(user domain.User) error
 	Update(user domain.User) error
 	Delete(id int) error
@@ -28,16 +28,16 @@ func NewUserRepository(db *database.DB) UserRepository {
 }
 
 // GetAll Get all usersdata
-func (r *userRepository) GetAll() ([]domain.User_DataTable, error) {
-	users := []domain.User_DataTable{}
+func (r *userRepository) GetAll() ([]domain.User, error) {
+	users := []domain.User{}
 	err := r.db.Find(&users).Error
 
 	return users, err
 }
 
 // GetByID Get single usersdata
-func (r *userRepository) GetByID(id int) (domain.User_DataTable, error) {
-	user := domain.User_DataTable{}
+func (r *userRepository) GetByID(id int) (domain.User, error) {
+	user := domain.User{}
 	err := r.db.First(&user, id).Error
 
 	return user, err
@@ -60,7 +60,7 @@ func (r *userRepository) Update(user domain.User) error {
 
 // Delete Delete userdata
 func (r *userRepository) Delete(id int) error {
-	user := domain.User_DataTable{}
+	user := domain.User{}
 
 	if id <= 0 {
 		return nil

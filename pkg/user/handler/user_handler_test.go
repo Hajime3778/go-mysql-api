@@ -24,8 +24,8 @@ func newMockRouter() (*gin.Engine, *gin.RouterGroup) {
 
 func TestGetAll(t *testing.T) {
 
-	mockUsers := make([]domain.User_DataTable, 0)
-	mockUser := domain.User_DataTable{}
+	mockUsers := make([]domain.User, 0)
+	mockUser := domain.User{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"
 	mockUser.Email = "mock@mock.com"
@@ -49,7 +49,7 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGetByID(t *testing.T) {
-	mockUser := domain.User_DataTable{}
+	mockUser := domain.User{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"
 	mockUser.Email = "mock@mock.com"
@@ -116,7 +116,7 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	mockUser := domain.User_DataTable{}
+	mockUser := domain.User{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"
 	mockUser.Email = "mock@mock.com"

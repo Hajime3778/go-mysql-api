@@ -12,15 +12,15 @@ type UserUsecase struct {
 }
 
 // GetAll is mock function
-func (_m *UserUsecase) GetAll() ([]domain.User_DataTable, error) {
+func (_m *UserUsecase) GetAll() ([]domain.User, error) {
 	ret := _m.Called()
-	return ret.Get(0).([]domain.User_DataTable), ret.Error(1)
+	return ret.Get(0).([]domain.User), ret.Error(1)
 }
 
 // GetByID is mock function
-func (_m *UserUsecase) GetByID(id int) (domain.User_DataTable, error) {
+func (_m *UserUsecase) GetByID(id int) (domain.User, error) {
 	ret := _m.Called(id)
-	return ret.Get(0).(domain.User_DataTable), ret.Error(1)
+	return ret.Get(0).(domain.User), ret.Error(1)
 }
 
 // Create is mock function
@@ -47,15 +47,15 @@ type UserRepository struct {
 }
 
 // GetAll is mock function
-func (_m *UserRepository) GetAll() ([]domain.User_DataTable, error) {
+func (_m *UserRepository) GetAll() ([]domain.User, error) {
 	ret := _m.Called()
-	return ret.Get(0).([]domain.User_DataTable), ret.Error(1)
+	return ret.Get(0).([]domain.User), ret.Error(1)
 }
 
 // GetByID is mock function
-func (_m *UserRepository) GetByID(id int) (domain.User_DataTable, error) {
+func (_m *UserRepository) GetByID(id int) (domain.User, error) {
 	ret := _m.Called(id)
-	return ret.Get(0).(domain.User_DataTable), ret.Error(1)
+	return ret.Get(0).(domain.User), ret.Error(1)
 }
 
 // Create is mock function
