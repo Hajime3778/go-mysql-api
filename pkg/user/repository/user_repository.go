@@ -43,7 +43,7 @@ func (r *userRepository) GetByID(id int) (domain.User_DataTable, error) {
 	return user, err
 }
 
-// Regist Add user
+// Create Add user
 func (r *userRepository) Create(user domain.User) error {
 	return r.db.Create(&user).Error
 }

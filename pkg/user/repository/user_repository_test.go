@@ -22,7 +22,6 @@ func setUpMockDB() (sqlmock.Sqlmock, *database.DB) {
 	}
 	d, mock, _ := sqlmock.New()
 	db := new(database.DB)
-	// gorm+sqlmockの場合テストが読みづらくなるのでmockのdriverははpostgresにする
 	db.Connection, _ = gorm.Open("mysql", d)
 
 	return mock, db

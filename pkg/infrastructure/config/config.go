@@ -46,7 +46,7 @@ func NewConfig() *Config {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
 	}
 
-	// UnmarshalしてCにマッピング
+	// UnmarshalしてConfigにマッピング
 	if err := viper.Unmarshal(&c); err != nil {
 		panic(fmt.Errorf("unable to decode into struct, %v", err))
 	}
