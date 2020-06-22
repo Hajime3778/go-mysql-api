@@ -1,11 +1,22 @@
-version: '3.2'
+version: "2.3"
 
 services:
-
+  web:
+    # build:
+    #   context: .
+    #   dockerfile: ../Dockerfile
+    image: go-mysql-api
+    container_name: go-mysql-api
+    ports:
+      - 3000:3000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ../config.json:/app/config.json
+      - ../log:/app/log
+      
   mysql: # Mysql container
-    build:
-      context: ../
-      dockerfile: dockerfile
     container_name: go-mysql-api-mysql
     image: mysql:5.7
     restart: always
@@ -20,6 +31,10 @@ services:
       TZ: Asia/Tokyo
     ports:
       - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
 
   pma: # phpMyAdmin container
     container_name: go-mysql-api-pma
