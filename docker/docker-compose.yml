@@ -5,6 +5,7 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile
+    container_name: go-mysql-api
     ports:
       - 3000:3000
     depends_on:
@@ -15,12 +16,15 @@ services:
       - ../log:/app/log
       
   mysql: # Mysql container
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
     container_name: go-mysql-api-mysql
     image: mysql:5.7
     restart: always
     volumes:
-      - ./my.cnf:/etc/mysql/my.cnf
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: rootPassword
       MYSQL_DATABASE: sample
