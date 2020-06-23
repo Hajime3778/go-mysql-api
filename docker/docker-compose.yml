@@ -2,11 +2,9 @@ version: "2.3"
 
 services:
   web:
-    # build:
-    #   context: .
-    #   dockerfile: ../Dockerfile
-    image: go-mysql-api
-    container_name: go-mysql-api
+    build:
+      context: ../
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     depends_on:
