@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"go-mysql-api/pkg/infrastructure/config"
 	"net/url"
-	"strings"
 
 	"github.com/jinzhu/gorm"
 )
@@ -48,11 +47,6 @@ func newDB(d *DB) *DB {
 	db, err := gorm.Open("mysql", connection)
 	if err != nil {
 		panic(err.Error())
-	}
-
-	// gormのデフォルトテーブル名のルールを修正
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return strings.Replace(defaultTableName, "_data_table", "", 1)
 	}
 
 	d.Connection = db
