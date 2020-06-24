@@ -73,13 +73,13 @@ func (h *UserHandler) Create(c *gin.Context) {
 	var user domain.User
 	c.BindJSON(&user)
 
-	err := h.usecase.Create(user)
+	id, err := h.usecase.Create(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		log.Println(err)
 		return
 	}
-	c.JSON(http.StatusCreated, nil)
+	c.JSON(http.StatusCreated, domain.CreatedResponse{ID: id})
 }
 
 // Update Userを更新します。

@@ -9,7 +9,7 @@ import (
 type UserUsecase interface {
 	GetAll() ([]domain.User, error)
 	GetByID(id int) (domain.User, error)
-	Create(user domain.User) error
+	Create(user domain.User) (int, error)
 	Update(user domain.User) error
 	Delete(id int) error
 }
@@ -37,7 +37,7 @@ func (u *userUsecase) GetByID(id int) (domain.User, error) {
 }
 
 // Create Userを作成します
-func (u *userUsecase) Create(user domain.User) error {
+func (u *userUsecase) Create(user domain.User) (int, error) {
 	return u.repo.Create(user)
 }
 
