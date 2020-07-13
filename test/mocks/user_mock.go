@@ -24,9 +24,9 @@ func (_m *UserUsecase) GetByID(id int) (domain.User, error) {
 }
 
 // Create is mock function
-func (_m *UserUsecase) Create(user domain.User) error {
+func (_m *UserUsecase) Create(user domain.User) (int, error) {
 	ret := _m.Called(user)
-	return ret.Error(0)
+	return user.ID, ret.Error(0)
 }
 
 // Update is mock function
@@ -59,9 +59,9 @@ func (_m *UserRepository) GetByID(id int) (domain.User, error) {
 }
 
 // Create is mock function
-func (_m *UserRepository) Create(user domain.User) error {
+func (_m *UserRepository) Create(user domain.User) (int, error) {
 	ret := _m.Called(user)
-	return ret.Error(0)
+	return user.ID, ret.Error(0)
 }
 
 // Update is mock function

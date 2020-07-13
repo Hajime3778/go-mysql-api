@@ -78,7 +78,7 @@ func TestCreate(t *testing.T) {
 
 	userRepository := repository.NewUserRepository(db)
 
-	err := userRepository.Create(mockUser)
+	_, err := userRepository.Create(mockUser)
 	assert.NoError(t, err)
 }
 

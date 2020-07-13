@@ -11,7 +11,7 @@ import (
 type UserRepository interface {
 	GetAll() ([]domain.User, error)
 	GetByID(id int) (domain.User, error)
-	Create(user domain.User) error
+	Create(user domain.User) (int, error)
 	Update(user domain.User) error
 	Delete(id int) error
 }
@@ -44,8 +44,10 @@ func (r *userRepository) GetByID(id int) (domain.User, error) {
 }
 
 // Create Add user
-func (r *userRepository) Create(user domain.User) error {
-	return r.db.Create(&user).Error
+func (r *userRepository) Create(user domain.User) (int, error) {
+	err := r.db.Create(&user).Error
+	id := user.ID
+	return id, err
 }
 
 // Update Update user

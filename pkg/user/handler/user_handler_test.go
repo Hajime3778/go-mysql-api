@@ -71,7 +71,7 @@ func TestGetByID(t *testing.T) {
 	assert.Equal(t, 200, res.Code)
 }
 
-func TestInsert(t *testing.T) {
+func TestCreate(t *testing.T) {
 	mockUser := domain.User{}
 	mockUser.ID = 1
 	mockUser.Name = "mockuser"

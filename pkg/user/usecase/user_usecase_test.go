@@ -71,7 +71,7 @@ func TestCreate(t *testing.T) {
 		mockUserRepo.On("Create", mockUser).Return(nil).Once()
 		usecase := usecase.NewUserUsecase(mockUserRepo)
 
-		err := usecase.Create(mockUser)
+		_, err := usecase.Create(mockUser)
 
 		assert.NoError(t, err)
 
